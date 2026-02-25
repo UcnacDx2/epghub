@@ -1,9 +1,11 @@
 """
-Unit tests for epg.scraper.ystengx
+Unit tests for epg.scraper.ystengx and end-to-end EPG generation pipeline.
 """
 import json
 import sys
 import os
+import tempfile
+import shutil
 from datetime import date, datetime
 from unittest.mock import patch, MagicMock
 from zoneinfo import ZoneInfo
@@ -248,3 +250,189 @@ class TestYstengxChannelConfig:
         for ch_id, name in expected.items():
             assert data[ch_id]["name"][0] == name, \
                 f"{ch_id}: expected '{name}', got '{data[ch_id]['name'][0]}'"
+
+
+# ---------------------------------------------------------------------------
+# End-to-end EPG generation tests
+# ---------------------------------------------------------------------------
+
+_REPO_ROOT = os.path.dirname(__file__)
+
+
+def _make_fake_api_response(programs=None):
+    """Build a ystengx API response with programs for a single day."""
+    if programs is None:
+        programs = [
+            {"programName": "新闻联播", "startTime": 1740474000, "endTime": 1740475800},
+            {"programName": "天气预报", "startTime": 1740475800, "endTime": 1740476280},
+            {"programName": "焦点访谈", "startTime": 1740476280, "endTime": 1740478800},
+        ]
+    body = {
+        "resultCode": "000",
+        "resultMessage": "success",
+        "content": [{"programs": programs}],
+    }
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.text = json.dumps(body)
+    return mock_resp
+
+
+class TestEpgXmltvGeneration:
+    """Validate that the xmltv generator produces a well-formed, DTD-valid EPG file."""
+
+    def _make_channels(self):
+        channels = []
+        ch = Channel("gx_cctv4", {"name": ["CCTV-4 中文国际"]})
+        ch.programs.append(Program(
+            title="新闻联播",
+            start_time=datetime(2026, 2, 25, 19, 0, tzinfo=TZ),
+            end_time=datetime(2026, 2, 25, 19, 30, tzinfo=TZ),
+            channel_id="gx_cctv4",
+        ))
+        ch.programs.append(Program(
+            title="天气预报",
+            start_time=datetime(2026, 2, 25, 19, 30, tzinfo=TZ),
+            end_time=datetime(2026, 2, 25, 19, 38, tzinfo=TZ),
+            channel_id="gx_cctv4",
+        ))
+        channels.append(ch)
+        ch2 = Channel("gx_cctv1", {"name": ["CCTV-1 综合"]})
+        ch2.programs.append(Program(
+            title="综合节目",
+            start_time=datetime(2026, 2, 25, 20, 0, tzinfo=TZ),
+            end_time=datetime(2026, 2, 25, 21, 0, tzinfo=TZ),
+            channel_id="gx_cctv1",
+        ))
+        channels.append(ch2)
+        return channels
+
+    def test_xmltv_write_returns_true(self):
+        from epg.generator import xmltv
+        channels = self._make_channels()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            epg_path = os.path.join(tmpdir, "epg.xml")
+            result = xmltv.write(epg_path, channels, "epghub")
+        assert result is True
+
+    def test_xmltv_write_file_exists(self):
+        from epg.generator import xmltv
+        channels = self._make_channels()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            epg_path = os.path.join(tmpdir, "epg.xml")
+            xmltv.write(epg_path, channels, "epghub")
+            assert os.path.exists(epg_path)
+
+    def test_xmltv_output_is_dtd_valid(self):
+        from epg.generator import xmltv
+        from lxml import etree
+        channels = self._make_channels()
+        dtd_path = os.path.join(_REPO_ROOT, "xmltv.dtd")
+        dtd = etree.DTD(open(dtd_path, "r"))
+        with tempfile.TemporaryDirectory() as tmpdir:
+            epg_path = os.path.join(tmpdir, "epg.xml")
+            xmltv.write(epg_path, channels, "epghub")
+            root = etree.XML(open(epg_path, "rb").read())
+        valid = dtd.validate(root)
+        assert valid, f"DTD validation failed: {dtd.error_log.filter_from_errors()}"
+
+    def test_xmltv_contains_channel_elements(self):
+        from epg.generator import xmltv
+        from lxml import etree
+        channels = self._make_channels()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            epg_path = os.path.join(tmpdir, "epg.xml")
+            xmltv.write(epg_path, channels, "epghub")
+            root = etree.XML(open(epg_path, "rb").read())
+        channel_ids = {el.get("id") for el in root.findall("channel")}
+        assert "gx_cctv4" in channel_ids
+        assert "gx_cctv1" in channel_ids
+
+    def test_xmltv_contains_programme_elements(self):
+        from epg.generator import xmltv
+        from lxml import etree
+        channels = self._make_channels()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            epg_path = os.path.join(tmpdir, "epg.xml")
+            xmltv.write(epg_path, channels, "epghub")
+            root = etree.XML(open(epg_path, "rb").read())
+        programmes = root.findall("programme")
+        titles = [p.findtext("title") for p in programmes]
+        assert "新闻联播" in titles
+        assert "天气预报" in titles
+        assert "综合节目" in titles
+
+    def test_xmltv_programme_times_are_formatted(self):
+        from epg.generator import xmltv
+        from lxml import etree
+        import re
+        channels = self._make_channels()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            epg_path = os.path.join(tmpdir, "epg.xml")
+            xmltv.write(epg_path, channels, "epghub")
+            root = etree.XML(open(epg_path, "rb").read())
+        time_pattern = re.compile(r"^\d{14} [+-]\d{4}$")
+        for prog in root.findall("programme"):
+            assert time_pattern.match(prog.get("start")), \
+                f"Bad start format: {prog.get('start')}"
+            assert time_pattern.match(prog.get("stop")), \
+                f"Bad stop format: {prog.get('stop')}"
+
+
+class TestFullPipelineWithYstengx:
+    """End-to-end test: load channels.yaml → mock ystengx API → generate EPG."""
+
+    _CONFIG_PATH = os.path.join(_REPO_ROOT, "config", "channels.yaml")
+
+    def test_pipeline_generates_valid_epg_for_gx_cctv_channels(self):
+        """
+        Load the real channels.yaml, mock the Guangxi EPG API to return valid
+        programme data, run the full update pipeline for gx_cctv4 and verify
+        that a DTD-valid EPG XML file is produced.
+        """
+        from epg import utils
+        from epg.generator import xmltv
+        from lxml import etree
+        import yaml
+
+        # Build a one-channel subset so the test is fast
+        with open(self._CONFIG_PATH) as f:
+            all_config = yaml.safe_load(f)
+
+        subset = {"gx_cctv4": all_config["gx_cctv4"]}
+        dtd_path = os.path.join(_REPO_ROOT, "xmltv.dtd")
+        dtd = etree.DTD(open(dtd_path, "r"))
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cfg_path = os.path.join(tmpdir, "channels.yaml")
+            with open(cfg_path, "w") as f:
+                yaml.dump(subset, f)
+
+            epg_path = os.path.join(tmpdir, "epg.xml")
+
+            with patch("epg.scraper.ystengx.requests.get",
+                       return_value=_make_fake_api_response()):
+                channels = utils.load_config(cfg_path)
+                for i, channel in enumerate(channels):
+                    utils.update_channel_full(channel, i)
+
+                # There should be programs after scraping
+                assert len(channels[0].programs) > 0, \
+                    "No programs were scraped for gx_cctv4"
+
+                xmltv.write(epg_path, channels, "epghub")
+
+            # Validate output
+            assert os.path.exists(epg_path), "EPG file was not created"
+            root = etree.XML(open(epg_path, "rb").read())
+            valid = dtd.validate(root)
+            assert valid, \
+                f"Generated EPG is not DTD-valid: {dtd.error_log.filter_from_errors()}"
+
+            # Channel element present
+            channel_ids = {el.get("id") for el in root.findall("channel")}
+            assert "gx_cctv4" in channel_ids
+
+            # Programme elements present
+            programmes = root.findall("programme")
+            assert len(programmes) > 0, "No programme elements in generated EPG"
