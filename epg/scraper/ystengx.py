@@ -99,8 +99,9 @@ def update(
     try:
         # 发送请求
         res = requests.get(url, headers=req_headers, timeout=10)
-    except Exception:
+    except Exception as e:
         print("Fail:", url)
+        print("Exception:", e)
         return False
 
     # 如果响应码不是 200，说明请求失败

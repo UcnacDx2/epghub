@@ -61,7 +61,9 @@ def scrap_channel(
     channel, channels_config, date: date = datetime.today().date()
 ) -> bool:
     channel.metadata["last_scraper"] = "FAILED"
-    
+    # Future dates may not yet have EPG data — suppress noisy warnings for them
+    is_future = date > datetime.now().date()
+
     for scraper in channels_config[channel.id]["scraper"]:
         scraper_module = importlib.import_module("epg.scraper" + "." + scraper)
         update = getattr(scraper_module, "update")
@@ -72,7 +74,8 @@ def scrap_channel(
             
             # 如果抓取成功但数据为空，跳到下一个抓取器
             if not data:
-                print(f"抓取器 {scraper} 成功执行，但没有返回数据，跳过此抓取器，尝试下一个。")
+                if not is_future:
+                    print(f"抓取器 {scraper} 成功执行，但没有返回数据，跳过此抓取器，尝试下一个。")
                 continue
             
             # 如果抓取器成功，并且有数据，就保存并返回
@@ -91,7 +94,8 @@ def scrap_channel(
             print(f"抓取器 {scraper} 失败，错误: {e}，跳过此抓取器，尝试下一个抓取器。")
             continue  # 如果当前抓取器失败，继续轮询下一个抓取器
 
-    print(f"所有抓取器都失败了，无法抓取频道 {channel.id} 数据。")
+    if not is_future:
+        print(f"所有抓取器都失败了，无法抓取频道 {channel.id} 数据。")
     return False  # 如果所有抓取器都失败，返回失败
 
 def copy_channels(
