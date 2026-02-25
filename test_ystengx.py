@@ -185,7 +185,7 @@ class TestYstengxUpdate:
         assert "450200" in called_url, "district_code 450200 must be in URL for Liuzhou channel"
 
     def test_string_scraper_id_uses_default_city_params(self):
-        """A plain string scraper_id should use the default 百色 city params."""
+        """A plain string scraper_id should use the default 南宁 city params."""
         channel = _make_channel()
         dt = date(2023, 10, 27)
 
@@ -194,8 +194,8 @@ class TestYstengxUpdate:
             ystengx.update(channel, scraper_id="cctv-1", dt=dt)
             called_url = mock_get.call_args[0][0]
 
-        assert "776" in called_url, "default CITY_CODE 776 (百色) must be present"
-        assert "451000" in called_url, "default districtCode 451000 (百色) must be present"
+        assert "771" in called_url, "default CITY_CODE 771 (南宁) must be present"
+        assert "450100" in called_url, "default districtCode 450100 (南宁) must be present"
 
     def test_string_uuid_auto_detects_nanning_city(self):
         """A plain UUID containing 'nanning' should auto-use 南宁 city params (771/450100)."""
