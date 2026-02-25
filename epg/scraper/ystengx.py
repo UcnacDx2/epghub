@@ -73,6 +73,10 @@ def update(
     # 提取频道节目数据
     programs_data = content[0]["programs"]
 
+    # 如果节目列表为空，不清除已有数据，直接返回 False
+    if not programs_data:
+        return False
+
     # 清空该频道的旧节目数据
     channel.flush(dt)
 
