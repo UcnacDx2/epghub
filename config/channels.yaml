@@ -123,7 +123,7 @@ gx_cctv05plus:
   recap: 1
   refresh: once
   scraper:
-    ystengx: cctv-05plus
+    ystengx: HD-8000k-1080P-cctv05plus
 gx_cctv6:
   name:
   - CCTV-6 电影
@@ -211,7 +211,7 @@ gx_cctv16:
   recap: 1
   refresh: once
   scraper:
-    ystengx: cctv-16
+    ystengx: HD-8000k-1080P-cctv16
 gx_cctv17:
   name:
   - CCTV-17 农业农村
@@ -227,7 +227,7 @@ gx_cctvennews:
   recap: 1
   refresh: once
   scraper:
-    ystengx: cctvennews
+    ystengx: SD-4000k-576P-cctvennews
 gx_cgtn:
   name:
   - 中国国际电视台纪录频道
@@ -243,7 +243,7 @@ gx_cgtnes:
   recap: 1
   refresh: once
   scraper:
-    ystengx: CGTNEspana
+    ystengx: SD-4000k-576P-CGTNEspana
 gx_cgtnfr:
   name:
   - 中国国际电视台法语频道
@@ -251,7 +251,7 @@ gx_cgtnfr:
   recap: 1
   refresh: once
   scraper:
-    ystengx: CGTNFrench
+    ystengx: SD-4000k-576P-CGTNFrench
 gx_cgtnar:
   name:
   - 中国国际电视台阿拉伯语频道
@@ -259,7 +259,7 @@ gx_cgtnar:
   recap: 1
   refresh: once
   scraper:
-    ystengx: CGTNArab
+    ystengx: SD-4000k-576P-CGTNArab
 gx_cgtnru:
   name:
   - 中国国际电视台俄语频道
@@ -267,7 +267,7 @@ gx_cgtnru:
   recap: 1
   refresh: once
   scraper:
-    ystengx: CGTNRussia
+    ystengx: SD-4000k-576P-CGTNRussia
 gx_chunxiang4k:
   name:
   - 纯享4K
@@ -275,7 +275,7 @@ gx_chunxiang4k:
   recap: 1
   refresh: once
   scraper:
-    ystengx: chunxiang4k
+    ystengx: HD-20M-2160P-chunxiang4k
 gx_guangxistv:
   name:
   - 广西卫视
@@ -347,7 +347,7 @@ gx_zhujiangxw:
   recap: 1
   refresh: once
   scraper:
-    ystengx: zhujiangxw
+    ystengx: SD-1500k-576P-zhujiangxw
 gx_nanfangstv:
   name:
   - 大湾区卫视
@@ -355,7 +355,7 @@ gx_nanfangstv:
   recap: 1
   refresh: once
   scraper:
-    ystengx: nanfangstv
+    ystengx: SD-4000k-576P-nanfangstv
 gx_shenzhenstv:
   name:
   - 深圳卫视
@@ -467,7 +467,7 @@ gx_heilongjiangstv:
   recap: 1
   refresh: once
   scraper:
-    ystengx: heilongjiangstv
+    ystengx: HD-8000k-1080P-heilongjiangstv
 gx_gansustv:
   name:
   - 甘肃卫视
@@ -555,7 +555,10 @@ gx_liuzhouxwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: liuzhouxwzh
+    ystengx:
+      uuid: SD-3000k-576P-liuzhouxwzh
+      city_code: '772'
+      district_code: '450200'
 gx_liuzhoukejiao:
   name:
   - 柳州科教
@@ -563,7 +566,10 @@ gx_liuzhoukejiao:
   recap: 1
   refresh: once
   scraper:
-    ystengx: liuzhoukejiao
+    ystengx:
+      uuid: SD-3000k-576P-liuzhoukejiao
+      city_code: '772'
+      district_code: '450200'
 gx_hzzonghe:
   name:
   - 贺州综合
@@ -571,7 +577,10 @@ gx_hzzonghe:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxhzzonghe
+    ystengx:
+      uuid: HD-4000k-1080P-gxhzzonghe
+      city_code: '774'
+      district_code: '451100'
 gx_hechixwzh:
   name:
   - 河池新闻综合
@@ -579,7 +588,10 @@ gx_hechixwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-hechixwzh
+    ystengx:
+      uuid: GXGD-hechixwzh
+      city_code: '778'
+      district_code: '451200'
 gx_yulinxwzh:
   name:
   - 玉林新闻综合
@@ -587,7 +599,10 @@ gx_yulinxwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxyulinxwzh
+    ystengx:
+      uuid: SD-5000k-576P-gxyulinxwzh
+      city_code: '775'
+      district_code: '450900'
 gx_nanningxwzh:
   name:
   - 南宁新闻综合
@@ -595,7 +610,10 @@ gx_nanningxwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: nanningxwzh
+    ystengx:
+      uuid: SD-3000k-576P-nanningxwzh
+      city_code: '771'
+      district_code: '450100'
 gx_nanningdssh:
   name:
   - 南宁文旅生活
@@ -603,7 +621,10 @@ gx_nanningdssh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: nanningdssh
+    ystengx:
+      uuid: SD-3000k-576P-nanningdssh
+      city_code: '771'
+      district_code: '450100'
 gx_nanninggg:
   name:
   - 南宁公共
@@ -611,7 +632,10 @@ gx_nanninggg:
   recap: 1
   refresh: once
   scraper:
-    ystengx: nanninggg
+    ystengx:
+      uuid: SD-3000k-576P-nanninggg
+      city_code: '771'
+      district_code: '450100'
 gx_nanningyssh:
   name:
   - 南宁影视娱乐
@@ -619,7 +643,10 @@ gx_nanningyssh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: nanningyssh
+    ystengx:
+      uuid: SD-3000k-576P-nanningyssh
+      city_code: '771'
+      district_code: '450100'
 gx_beihaixwzh:
   name:
   - 北海新闻
@@ -627,7 +654,10 @@ gx_beihaixwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: beihaixwzh
+    ystengx:
+      uuid: SD-3000k-576P-beihaixwzh
+      city_code: '779'
+      district_code: '450500'
 gx_beihaikejiao:
   name:
   - 北海经济科教
@@ -635,7 +665,10 @@ gx_beihaikejiao:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxbeihaikejiao
+    ystengx:
+      uuid: SD-3000k-576P-gxbeihaikejiao
+      city_code: '779'
+      district_code: '450500'
 gx_baisezh:
   name:
   - 百色综合
@@ -643,7 +676,7 @@ gx_baisezh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxbaisezh
+    ystengx: HD-8000k-1080P-gxbaisezh
 gx_laibinzh:
   name:
   - 来宾综合
@@ -651,7 +684,10 @@ gx_laibinzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxlaibinzh
+    ystengx:
+      uuid: SD-3000k-576P-gxlaibinzh
+      city_code: '772'
+      district_code: '451300'
 gx_wuzhouxw:
   name:
   - 梧州新闻综合
@@ -659,7 +695,10 @@ gx_wuzhouxw:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxwuzhouxw
+    ystengx:
+      uuid: HD-8000k-1080P-gxwuzhouxw
+      city_code: '774'
+      district_code: '450400'
 gx_wuzhoujysh:
   name:
   - 梧州教育生活
@@ -667,7 +706,10 @@ gx_wuzhoujysh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxwuzhoujysh
+    ystengx:
+      uuid: HD-8000k-1080P-gxwuzhoujysh
+      city_code: '774'
+      district_code: '450400'
 gx_fangchenggangxwzh:
   name:
   - 防城港新闻综合
@@ -675,7 +717,10 @@ gx_fangchenggangxwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxfangchenggangxwzh
+    ystengx:
+      uuid: HD-8000k-1080P-gxfangchenggangxwzh
+      city_code: '770'
+      district_code: '450600'
 gx_fangchengganggg:
   name:
   - 防城港公共
@@ -683,7 +728,10 @@ gx_fangchengganggg:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxfangchengganggg
+    ystengx:
+      uuid: HD-8000k-1080P-gxfangchengganggg
+      city_code: '770'
+      district_code: '450600'
 gx_chongzuozh:
   name:
   - 崇左综合
@@ -691,7 +739,10 @@ gx_chongzuozh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gxchongzuozh
+    ystengx:
+      uuid: SD-3000k-576P-gxchongzuozh
+      city_code: '771'
+      district_code: '451400'
 gx_guilinxwzh:
   name:
   - 桂林新闻综合
@@ -699,7 +750,10 @@ gx_guilinxwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-guilinxwzh
+    ystengx:
+      uuid: GXGD-guilinxwzh
+      city_code: '773'
+      district_code: '450300'
 gx_guilinkjly:
   name:
   - 桂林科教旅游
@@ -707,7 +761,10 @@ gx_guilinkjly:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-guilinkjly
+    ystengx:
+      uuid: GXGD-guilinkjly
+      city_code: '773'
+      district_code: '450300'
 gx_guilingg:
   name:
   - 桂林公共频道
@@ -715,7 +772,10 @@ gx_guilingg:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-guilingg
+    ystengx:
+      uuid: GXGD-guilingg
+      city_code: '773'
+      district_code: '450300'
 gx_guigangxwzh:
   name:
   - 贵港新闻综合
@@ -723,7 +783,10 @@ gx_guigangxwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-guigangxwzh
+    ystengx:
+      uuid: GXGD-guigangxwzh
+      city_code: '775'
+      district_code: '450800'
 gx_guiganggg:
   name:
   - 贵港科教生活
@@ -731,7 +794,10 @@ gx_guiganggg:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-guiganggg
+    ystengx:
+      uuid: GXGD-guiganggg
+      city_code: '775'
+      district_code: '450800'
 gx_qinzhouxwzh:
   name:
   - 钦州新闻综合
@@ -739,7 +805,10 @@ gx_qinzhouxwzh:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-qinzhouxwzh
+    ystengx:
+      uuid: GXGD-qinzhouxwzh
+      city_code: '777'
+      district_code: '450700'
 gx_qinzhouggys:
   name:
   - 钦州公共娱乐
@@ -747,7 +816,10 @@ gx_qinzhouggys:
   recap: 1
   refresh: once
   scraper:
-    ystengx: GXGD-qinzhouggys
+    ystengx:
+      uuid: GXGD-qinzhouggys
+      city_code: '777'
+      district_code: '450700'
 gx_gxstv:
   name:
   - 广西卫视
@@ -803,7 +875,7 @@ gx_beijingjishi:
   recap: 1
   refresh: once
   scraper:
-    ystengx: beijingjishi
+    ystengx: HD-8000k-1080P-beijingjishi
 gx_xiamenstv:
   name:
   - 厦门卫视标清4M
@@ -811,7 +883,7 @@ gx_xiamenstv:
   recap: 1
   refresh: once
   scraper:
-    ystengx: xiamenstv
+    ystengx: SD-4000k-576P-xiamenstv
 gx_kambatv:
   name:
   - 康巴卫视
@@ -819,7 +891,7 @@ gx_kambatv:
   recap: 1
   refresh: once
   scraper:
-    ystengx: kambatv
+    ystengx: SD-4000k-576P-kambatv
 gx_bingtuanstv:
   name:
   - 兵团卫视标清4M
@@ -827,7 +899,7 @@ gx_bingtuanstv:
   recap: 1
   refresh: once
   scraper:
-    ystengx: bingtuanstv
+    ystengx: SD-4000k-576P-bingtuanstv
 gx_yanbianstv:
   name:
   - 延边卫视标清4M
@@ -835,7 +907,7 @@ gx_yanbianstv:
   recap: 1
   refresh: once
   scraper:
-    ystengx: yanbianstv
+    ystengx: SD-4000k-576P-yanbianstv
 gx_anduostv:
   name:
   - 安多卫视标清4M
@@ -843,7 +915,7 @@ gx_anduostv:
   recap: 1
   refresh: once
   scraper:
-    ystengx: anduostv
+    ystengx: SD-4000k-576P-anduostv
 gx_jinyingjs:
   name:
   - 金鹰纪实
@@ -851,7 +923,7 @@ gx_jinyingjs:
   recap: 1
   refresh: once
   scraper:
-    ystengx: jinyingjs
+    ystengx: SD-4000k-576P-jinyingjs
 gx_sanshastv:
   name:
   - 三沙卫视(标清)
@@ -875,7 +947,7 @@ gx_jiajiakaton:
   recap: 1
   refresh: once
   scraper:
-    ystengx: jiajiakaton
+    ystengx: SD-4000k-576P-jiajiakaton
 gx_kakukaton:
   name:
   - 卡酷卡通
@@ -907,7 +979,7 @@ gx_jiaoyutv2:
   recap: 1
   refresh: once
   scraper:
-    ystengx: jiaoyutv2
+    ystengx: SD-4000k-576P-jiaoyutv2
 gx_jiaoyutv4:
   name:
   - 中国教育4套
@@ -915,7 +987,7 @@ gx_jiaoyutv4:
   recap: 1
   refresh: once
   scraper:
-    ystengx: jiaoyutv4
+    ystengx: SD-4000k-576P-jiaoyutv4
 gx_shandongjy:
   name:
   - 山东教育
@@ -931,7 +1003,7 @@ gx_golf:
   recap: 1
   refresh: once
   scraper:
-    ystengx: golf
+    ystengx: SD-4000k-576P-golf
 gx_jingpinmc:
   name:
   - 精品萌宠
@@ -947,7 +1019,7 @@ gx_supermovie:
   recap: 1
   refresh: once
   scraper:
-    ystengx: Supermovie
+    ystengx: HD-8000k-1080P-Supermovie
 gx_supercctv14:
   name:
   - 黑莓动画
@@ -955,7 +1027,7 @@ gx_supercctv14:
   recap: 1
   refresh: once
   scraper:
-    ystengx: Supercctv14
+    ystengx: HD-8000k-1080P-Supercctv14
 gx_superwmyx:
   name:
   - 哒啵赛事
@@ -963,7 +1035,7 @@ gx_superwmyx:
   recap: 1
   refresh: once
   scraper:
-    ystengx: Superwmyx
+    ystengx: HD-8000k-1080P-Superwmyx
 gx_dabodj:
   name:
   - 哒啵电竞
@@ -979,7 +1051,7 @@ gx_miguaoyun2:
   recap: 1
   refresh: once
   scraper:
-    ystengx: miguaoyun2
+    ystengx: HD-8000k-1080P-miguaoyun2
 gx_miguaoyun1:
   name:
   - 睛彩篮球
@@ -987,7 +1059,7 @@ gx_miguaoyun1:
   recap: 1
   refresh: once
   scraper:
-    ystengx: miguaoyun1
+    ystengx: HD-8000k-1080P-miguaoyun1
 gx_quanminrl:
   name:
   - 睛彩青少
@@ -995,7 +1067,7 @@ gx_quanminrl:
   recap: 1
   refresh: once
   scraper:
-    ystengx: quanminrl
+    ystengx: HD-8000k-1080P-quanminrl
 gx_guzhuangjc:
   name:
   - 古装剧场
@@ -1011,7 +1083,7 @@ gx_jcgcw:
   recap: 1
   refresh: once
   scraper:
-    ystengx: jcgcw
+    ystengx: MIGU-8000k-1080P-jcgcw
 gx_dongzuody:
   name:
   - 动作电影
@@ -1083,7 +1155,7 @@ gx_gzkongfu:
   recap: 1
   refresh: once
   scraper:
-    ystengx: gzkongfu
+    ystengx: SD-1500k-576P-gzkongfu
 gx_junshipl:
   name:
   - 军事评论
@@ -1139,7 +1211,7 @@ gx_cmlapo:
   recap: 1
   refresh: once
   scraper:
-    ystengx: cmlapo
+    ystengx: HD-1500k-720P-cmlapo
 gx_xwwl:
   name:
   - 炫舞未来
