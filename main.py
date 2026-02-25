@@ -6,6 +6,7 @@ from epg.scraper import __xmltv
 from lxml import etree
 from datetime import datetime, timezone
 from croniter import croniter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import shutil
 
@@ -40,7 +41,11 @@ epg_path = os.path.join(os.getcwd(), "web", "epg.xml")
 if not os.path.exists(os.path.join(os.getcwd(), "web")):
     os.mkdir(os.path.join(os.getcwd(), "web"))
 
-channels = utils.load_config(config_path)
+YST_CHANNEL_URL = os.getenv("YST_CHANNEL_URL", utils.YST_CHANNEL_URL)
+channels = utils.load_channels_from_yst_json(YST_CHANNEL_URL)
+if not channels:
+    print("Falling back to channels.yaml", flush=True)
+    channels = utils.load_config(config_path)
 
 if XMLTV_URL == "":
     xml_channels = []
@@ -68,9 +73,20 @@ else:
 print("refreshing...")
 
 num_refresh_channels = 0
-for channel in channels:
-    if utils.update_channel_full(channel, num_refresh_channels):
-        num_refresh_channels += 1
+MAX_WORKERS = int(os.getenv("EPG_WORKERS", "10"))
+
+def _refresh_channel(args):
+    channel, idx = args
+    return utils.update_channel_full(channel, idx)
+
+with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    futures = {
+        executor.submit(_refresh_channel, (channel, i)): channel
+        for i, channel in enumerate(channels)
+    }
+    for future in as_completed(futures):
+        if future.result():
+            num_refresh_channels += 1
 
 print(
     f"number of refreshed channels: {num_refresh_channels}/{len(channels)}", flush=True
