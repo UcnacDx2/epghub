@@ -13,10 +13,9 @@ _headers = {
     "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; B862AV3.2-M Build/PPR1.180610.011)",
 }
 
-# 默认城市参数：南宁（CITY_CODE=771, districtCode=450100）
-# 南宁是广西首府，包含最完整的频道包，适合作为无城市关键字频道的默认城市
-_DEFAULT_CITY_CODE = "771"
-_DEFAULT_DISTRICT_CODE = "450100"
+# 默认城市参数：百色（CITY_CODE=776, districtCode=451000）
+_DEFAULT_CITY_CODE = "776"
+_DEFAULT_DISTRICT_CODE = "451000"
 
 # UUID 子串 → (CITY_CODE, districtCode) 映射，用于从 uuid 自动推断城市鉴权参数
 _UUID_CITY_MAP = (
@@ -39,7 +38,7 @@ _UUID_CITY_MAP = (
 
 def _detect_city_params(uuid: str) -> tuple[str, str]:
     """从 UUID 子串自动推断城市鉴权参数，返回 (city_code, district_code)。
-    匹配不到时返回默认南宁参数。"""
+    匹配不到时返回默认百色参数。"""
     uuid_lower = uuid.lower()
     for keyword, params in _UUID_CITY_MAP:
         if keyword in uuid_lower:
