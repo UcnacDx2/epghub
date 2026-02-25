@@ -7,6 +7,7 @@ Maybe I should add a verbose option. Or use logging.
 
 import yaml
 import importlib
+import requests
 from epg.model import Channel
 from datetime import datetime, date, timedelta
 from epg.scraper import tz_shanghai
