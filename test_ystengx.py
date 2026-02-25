@@ -193,6 +193,45 @@ class TestYstengxUpdate:
         assert "776" in called_url, "default CITY_CODE 776 (百色) must be present"
         assert "451000" in called_url, "default districtCode 451000 (百色) must be present"
 
+    def test_string_uuid_auto_detects_nanning_city(self):
+        """A plain UUID containing 'nanning' should auto-use 南宁 city params (771/450100)."""
+        channel = _make_channel("SD-3000k-576P-nanningyssh")
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="SD-3000k-576P-nanningyssh", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "771" in called_url, "CITY_CODE 771 (南宁) must be auto-detected"
+        assert "450100" in called_url, "districtCode 450100 (南宁) must be auto-detected"
+
+    def test_string_uuid_auto_detects_guilin_city(self):
+        """A plain UUID containing 'guilin' should auto-use 桂林 city params (773/450300)."""
+        channel = _make_channel("GXGD-guilinxwzh")
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="GXGD-guilinxwzh", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "773" in called_url, "CITY_CODE 773 (桂林) must be auto-detected"
+        assert "450300" in called_url, "districtCode 450300 (桂林) must be auto-detected"
+
+    def test_string_uuid_auto_detects_hezhou_city(self):
+        """A plain UUID 'gxhzzonghe' should auto-use 贺州 city params (774/451100)."""
+        channel = _make_channel("HD-4000k-1080P-gxhzzonghe")
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="HD-4000k-1080P-gxhzzonghe", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "774" in called_url, "CITY_CODE 774 (贺州) must be auto-detected"
+        assert "451100" in called_url, "districtCode 451100 (贺州) must be auto-detected"
+
     def test_returns_false_on_http_error(self):
         channel = _make_channel()
         mock_resp = MagicMock()

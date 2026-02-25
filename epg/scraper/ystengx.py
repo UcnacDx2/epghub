@@ -17,6 +17,34 @@ _headers = {
 _DEFAULT_CITY_CODE = "776"
 _DEFAULT_DISTRICT_CODE = "451000"
 
+# UUID 子串 → (CITY_CODE, districtCode) 映射，用于从 uuid 自动推断城市鉴权参数
+_UUID_CITY_MAP = (
+    ("nanning",         ("771", "450100")),  # 南宁
+    ("liuzhou",         ("772", "450200")),  # 柳州
+    ("guilin",          ("773", "450300")),  # 桂林
+    ("wuzhou",          ("774", "450400")),  # 梧州
+    ("beihai",          ("779", "450500")),  # 北海
+    ("fangchenggang",   ("770", "450600")),  # 防城港
+    ("qinzhou",         ("777", "450700")),  # 钦州
+    ("guigang",         ("775", "450800")),  # 贵港
+    ("yulin",           ("775", "450900")),  # 玉林
+    ("baisezh",         ("776", "451000")),  # 百色
+    ("hzzonghe",        ("774", "451100")),  # 贺州
+    ("hechi",           ("778", "451200")),  # 河池
+    ("laibin",          ("772", "451300")),  # 来宾
+    ("chongzuo",        ("771", "451400")),  # 崇左
+)
+
+
+def _detect_city_params(uuid: str) -> tuple[str, str]:
+    """从 UUID 子串自动推断城市鉴权参数，返回 (city_code, district_code)。
+    匹配不到时返回默认百色参数。"""
+    uuid_lower = uuid.lower()
+    for keyword, params in _UUID_CITY_MAP:
+        if keyword in uuid_lower:
+            return params
+    return (_DEFAULT_CITY_CODE, _DEFAULT_DISTRICT_CODE)
+
 
 def _make_ability_str(city_code: str = _DEFAULT_CITY_CODE, district_code: str = _DEFAULT_DISTRICT_CODE) -> str:
     """构造广西移动 EPG 鉴权能力串，需匹配频道所在城市。"""
@@ -36,8 +64,8 @@ def update(
         district_code = scraper_id.get("district_code", _DEFAULT_DISTRICT_CODE)
     else:
         channel_id = channel.id if scraper_id is None else scraper_id
-        city_code = _DEFAULT_CITY_CODE
-        district_code = _DEFAULT_DISTRICT_CODE
+        # 根据 UUID 自动推断城市参数，解决从 yst_channel.json 加载时缺少城市信息的问题
+        city_code, district_code = _detect_city_params(channel_id)
 
     # 格式化日期，准备请求参数
     start_date = dt.strftime("%Y%m%d")
