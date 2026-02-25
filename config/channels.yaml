@@ -76,3 +76,163 @@
     51livetv: '1926'
     sports8: '1024'
     tvmao: GXWZTV1
+'gx_cctv1':
+  name:
+  - CCTV-1 综合
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv1
+'gx_cctv2':
+  name:
+  - CCTV-2 财经
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv2
+'gx_cctv3':
+  name:
+  - CCTV-3 综艺
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv3
+'gx_cctv4':
+  name:
+  - CCTV-4 中文国际
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv4
+'gx_cctv5':
+  name:
+  - CCTV-5 体育
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv5
+'gx_cctv6':
+  name:
+  - CCTV-6 电影
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv6
+'gx_cctv7':
+  name:
+  - CCTV-7 国防军事
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv7
+'gx_cctv8':
+  name:
+  - CCTV-8 电视剧
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv8
+'gx_cctv9':
+  name:
+  - CCTV-9 纪录
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv9
+'gx_cctv10':
+  name:
+  - CCTV-10 科教
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv10
+'gx_cctv11':
+  name:
+  - CCTV-11 戏曲
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv11
+'gx_cctv12':
+  name:
+  - CCTV-12 社会与法
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv12
+'gx_cctv13':
+  name:
+  - CCTV-13 新闻
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv13
+'gx_cctv14':
+  name:
+  - CCTV-14 少儿
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv14
+'gx_cctv15':
+  name:
+  - CCTV-15 音乐
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-cctv15
+'gx_gxtv1':
+  name:
+  - 广西卫视
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-gxtv1
+'gx_gxtv2':
+  name:
+  - 广西都市
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-gxtv2
+'gx_gxtv3':
+  name:
+  - 广西生活
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-gxtv3
+'gx_gxtv4':
+  name:
+  - 广西影视
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-gxtv4
+'gx_gxtv5':
+  name:
+  - 广西文体
+  preview: 2
+  recap: 1
+  refresh: once
+  scraper:
+    ystengx: HD-8000k-1080P-gxtv5
