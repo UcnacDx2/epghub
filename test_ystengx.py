@@ -200,6 +200,34 @@ class TestYstengxUpdate:
 
         assert result is False
 
+    def test_returns_false_when_programs_empty_and_does_not_flush(self):
+        """When API returns 000 but no programs, return False and preserve existing data."""
+        channel = _make_channel()
+        dt = date(2023, 10, 27)
+        # Pre-populate with existing programs for the same date
+        existing_prog = Program(
+            channel_id=channel.id,
+            title="已有节目",
+            start_time=datetime(2023, 10, 27, 8, 0, tzinfo=TZ),
+            end_time=datetime(2023, 10, 27, 9, 0, tzinfo=TZ),
+        )
+        channel.programs.append(existing_prog)
+
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = json.dumps({
+            "resultCode": "000",
+            "content": [{"programs": []}],
+        })
+
+        with patch("epg.scraper.ystengx.requests.get", return_value=mock_resp):
+            result = ystengx.update(channel, scraper_id="chunxiang4k", dt=dt)
+
+        assert result is False
+        # Existing programs must NOT have been flushed
+        assert len(channel.programs) == 1
+        assert channel.programs[0].title == "已有节目"
+
     def test_flush_removes_old_programs_for_same_date(self):
         channel = _make_channel()
         dt = date(2023, 10, 27)
