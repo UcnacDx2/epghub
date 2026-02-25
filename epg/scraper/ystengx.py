@@ -49,8 +49,14 @@ def _detect_city_params(uuid: str) -> tuple[str, str]:
 def _make_ability_str(city_code: str = _DEFAULT_CITY_CODE, district_code: str = _DEFAULT_DISTRICT_CODE) -> str:
     """构造广西移动 EPG 鉴权能力串，需匹配频道所在城市。"""
     return (
-        f'{{"CITY_CODE":"{city_code}","districtCode":"{district_code}",'
-        f'"deviceGroupIds":["4575"],"abilities":["4K-1|cp-TENCENT|timeShift|NxM|DL-3rd|upgrade14"]}}'
+        f'{{"CITY_CODE":"{city_code}","COUNTY_CODE":"","VILLAGE_CODE":"",'
+        f'"abilities":["4K-1|cp-TENCENT|timeShift|NxM|DL-3rd|upgrade14"],'
+        f'"businessGroupIds":[],'
+        f'"deviceGroupIds":["4575"],'
+        f'"districtCode":"{district_code}",'
+        f'"labelIds":["451","4518","45177","45158","45135","4586","45184","45290","45328","4549"],'
+        f'"userGroupIds":[],'
+        f'"userLabelIds":["451","4518","45177"]}}'
     )
 
 

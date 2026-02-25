@@ -151,6 +151,10 @@ class TestYstengxUpdate:
         assert "CITY_CODE" in called_url, "CITY_CODE must be present in URL"
         assert "abilities" in called_url, "abilities must be present in URL"
         assert "districtCode" in called_url, "districtCode must be present in URL"
+        # Additional fields required by the API to return premium/MIGU channel data
+        assert "labelIds" in called_url, "labelIds must be present in URL"
+        assert "userLabelIds" in called_url, "userLabelIds must be present in URL"
+        assert "COUNTY_CODE" in called_url, "COUNTY_CODE must be present in URL"
 
     def test_dict_scraper_id_uses_correct_uuid(self):
         """A dict scraper_id should use the 'uuid' key as the channel UUID."""
