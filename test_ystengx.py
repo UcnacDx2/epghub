@@ -150,6 +150,87 @@ class TestYstengxUpdate:
         assert "4575" in called_url, "deviceGroupId 4575 must be present in URL"
         assert "CITY_CODE" in called_url, "CITY_CODE must be present in URL"
         assert "abilities" in called_url, "abilities must be present in URL"
+        assert "districtCode" in called_url, "districtCode must be present in URL"
+
+    def test_dict_scraper_id_uses_correct_uuid(self):
+        """A dict scraper_id should use the 'uuid' key as the channel UUID."""
+        channel = _make_channel("gx_liuzhouxwzh")
+        dt = date(2023, 10, 27)
+        scraper_cfg = {"uuid": "SD-3000k-576P-liuzhouxwzh", "city_code": "772", "district_code": "450200"}
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            result = ystengx.update(channel, scraper_id=scraper_cfg, dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert result is True
+        assert "uuid=SD-3000k-576P-liuzhouxwzh" in called_url
+
+    def test_dict_scraper_id_uses_city_params(self):
+        """A dict scraper_id should embed the city's CITY_CODE and districtCode in the URL."""
+        channel = _make_channel("gx_liuzhouxwzh")
+        dt = date(2023, 10, 27)
+        scraper_cfg = {"uuid": "SD-3000k-576P-liuzhouxwzh", "city_code": "772", "district_code": "450200"}
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id=scraper_cfg, dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "772" in called_url, "city_code 772 must be in URL for Liuzhou channel"
+        assert "450200" in called_url, "district_code 450200 must be in URL for Liuzhou channel"
+
+    def test_string_scraper_id_uses_default_city_params(self):
+        """A plain string scraper_id should use the default 百色 city params."""
+        channel = _make_channel()
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="cctv-1", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "776" in called_url, "default CITY_CODE 776 (百色) must be present"
+        assert "451000" in called_url, "default districtCode 451000 (百色) must be present"
+
+    def test_string_uuid_auto_detects_nanning_city(self):
+        """A plain UUID containing 'nanning' should auto-use 南宁 city params (771/450100)."""
+        channel = _make_channel("SD-3000k-576P-nanningyssh")
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="SD-3000k-576P-nanningyssh", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "771" in called_url, "CITY_CODE 771 (南宁) must be auto-detected"
+        assert "450100" in called_url, "districtCode 450100 (南宁) must be auto-detected"
+
+    def test_string_uuid_auto_detects_guilin_city(self):
+        """A plain UUID containing 'guilin' should auto-use 桂林 city params (773/450300)."""
+        channel = _make_channel("GXGD-guilinxwzh")
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="GXGD-guilinxwzh", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "773" in called_url, "CITY_CODE 773 (桂林) must be auto-detected"
+        assert "450300" in called_url, "districtCode 450300 (桂林) must be auto-detected"
+
+    def test_string_uuid_auto_detects_hezhou_city(self):
+        """A plain UUID 'gxhzzonghe' should auto-use 贺州 city params (774/451100)."""
+        channel = _make_channel("HD-4000k-1080P-gxhzzonghe")
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="HD-4000k-1080P-gxhzzonghe", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        assert "774" in called_url, "CITY_CODE 774 (贺州) must be auto-detected"
+        assert "451100" in called_url, "districtCode 451100 (贺州) must be auto-detected"
 
     def test_returns_false_on_http_error(self):
         channel = _make_channel()
