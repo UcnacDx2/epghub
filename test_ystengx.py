@@ -135,7 +135,34 @@ class TestYstengxUpdate:
         assert "startDate=20231027" in called_url
         assert "endDate=20231027" in called_url
 
+    def test_request_url_contains_device_ability_string(self):
+        """Verify the device ability string is URL-encoded into the request."""
+        channel = _make_channel()
+        dt = date(2023, 10, 27)
+
+        with patch("epg.scraper.ystengx.requests.get") as mock_get:
+            mock_get.return_value = _fake_response()
+            ystengx.update(channel, scraper_id="HD-8000k-1080P-cctv4", dt=dt)
+            called_url = mock_get.call_args[0][0]
+
+        # The ability string must include device group and abilities so the
+        # Guangxi EPG server returns program data instead of "无可用结果"
+        assert "4575" in called_url, "deviceGroupId 4575 must be present in URL"
+        assert "CITY_CODE" in called_url, "CITY_CODE must be present in URL"
+        assert "abilities" in called_url, "abilities must be present in URL"
+
     def test_returns_false_on_http_error(self):
+        channel = _make_channel()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 500
+
+        with patch("epg.scraper.ystengx.requests.get", return_value=mock_resp):
+            result = ystengx.update(channel, scraper_id="HD-8000k-1080P-cctv4")
+
+        assert result is False
+        assert channel.programs == []
+
+
         channel = _make_channel()
         mock_resp = MagicMock()
         mock_resp.status_code = 500
@@ -436,3 +463,98 @@ class TestFullPipelineWithYstengx:
             # Programme elements present
             programmes = root.findall("programme")
             assert len(programmes) > 0, "No programme elements in generated EPG"
+
+
+class TestLoadChannelsFromYstJson:
+    """Tests for utils.load_channels_from_yst_json dynamic channel loading."""
+
+    def _fake_yst_json(self):
+        return [
+            {"uuid": "cctv-1", "name": "CCTV-1"},
+            {"uuid": "HD-8000k-1080P-cctv4", "name": "CCTV-4"},
+            {"uuid": "guangxistv", "name": "广西卫视"},
+        ]
+
+    def test_loads_channels_from_json_url(self):
+        from epg import utils
+        fake_resp = MagicMock()
+        fake_resp.raise_for_status = MagicMock()
+        fake_resp.json.return_value = self._fake_yst_json()
+
+        with patch("epg.utils.requests.get", return_value=fake_resp):
+            channels = utils.load_channels_from_yst_json("http://fake-url/yst_channel.json")
+
+        assert len(channels) == 3
+
+    def test_channel_ids_match_uuids(self):
+        from epg import utils
+        fake_resp = MagicMock()
+        fake_resp.raise_for_status = MagicMock()
+        fake_resp.raise_for_status.return_value = None
+        fake_resp.json.return_value = self._fake_yst_json()
+
+        with patch("epg.utils.requests.get", return_value=fake_resp):
+            channels = utils.load_channels_from_yst_json("http://fake-url/yst_channel.json")
+
+        ids = [c.id for c in channels]
+        assert "cctv-1" in ids
+        assert "HD-8000k-1080P-cctv4" in ids
+        assert "guangxistv" in ids
+
+    def test_channel_names_are_set(self):
+        from epg import utils
+        fake_resp = MagicMock()
+        fake_resp.raise_for_status = MagicMock()
+        fake_resp.json.return_value = self._fake_yst_json()
+
+        with patch("epg.utils.requests.get", return_value=fake_resp):
+            channels = utils.load_channels_from_yst_json("http://fake-url/yst_channel.json")
+
+        names = {c.id: c.metadata["name"][0] for c in channels}
+        assert names["cctv-1"] == "CCTV-1"
+        assert names["HD-8000k-1080P-cctv4"] == "CCTV-4"
+        assert names["guangxistv"] == "广西卫视"
+
+    def test_channels_use_ystengx_scraper(self):
+        from epg import utils
+        fake_resp = MagicMock()
+        fake_resp.raise_for_status = MagicMock()
+        fake_resp.json.return_value = self._fake_yst_json()
+
+        with patch("epg.utils.requests.get", return_value=fake_resp):
+            channels = utils.load_channels_from_yst_json("http://fake-url/yst_channel.json")
+
+        # Verify each channel uses ystengx scraper with its own UUID
+        for ch in channels:
+            with patch("epg.scraper.ystengx.requests.get",
+                       return_value=_fake_response()) as mock_get:
+                ch.update()
+                called_url = mock_get.call_args[0][0]
+            assert f"uuid={ch.id}" in called_url, \
+                f"Channel {ch.id} should use its own UUID as scraper ID"
+
+    def test_returns_empty_list_on_fetch_error(self):
+        from epg import utils
+
+        with patch("epg.utils.requests.get", side_effect=Exception("network error")):
+            channels = utils.load_channels_from_yst_json("http://fake-url/yst_channel.json")
+
+        assert channels == []
+
+    def test_skips_entries_without_uuid(self):
+        from epg import utils
+        data_with_missing_uuid = [
+            {"uuid": "cctv-1", "name": "CCTV-1"},
+            {"name": "No UUID Channel"},  # no uuid key
+            {"uuid": "", "name": "Empty UUID"},  # empty uuid
+        ]
+        fake_resp = MagicMock()
+        fake_resp.raise_for_status = MagicMock()
+        fake_resp.json.return_value = data_with_missing_uuid
+
+        with patch("epg.utils.requests.get", return_value=fake_resp):
+            channels = utils.load_channels_from_yst_json("http://fake-url/yst_channel.json")
+
+        assert len(channels) == 1
+        assert channels[0].id == "cctv-1"
+

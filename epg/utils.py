@@ -12,6 +12,8 @@ from epg.model import Channel
 from datetime import datetime, date, timedelta
 from epg.scraper import tz_shanghai
 
+YST_CHANNEL_URL = "https://lvpspanel.gxa.ssl.bcs.ottcn.com/WEB_WATCHTV2/yst_channel.json"
+
 
 def load_config(path: str) -> list[Channel]:
     """
@@ -226,6 +228,65 @@ def update_recap(channel: Channel) -> int:
                     print(pointer_date, channel.metadata["last_scraper"], flush=True)
             pointer_date += timedelta(1)
     return recaped_days
+
+
+def load_channels_from_yst_json(url: str = YST_CHANNEL_URL) -> list[Channel]:
+    """
+    Load channels dynamically from the Guangxi Mobile IPTV channel JSON.
+
+    Each channel entry uses the `ystengx` scraper with the channel's own UUID,
+    so the EPG is always in sync with the live channel list.
+
+    Args:
+        url (str): URL of yst_channel.json (default: official Guangxi Mobile URL).
+
+    Returns:
+        list[Channel]: The channels loaded from the JSON.
+    """
+    try:
+        resp = requests.get(
+            url,
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Referer": "https://lvpspanel.gxa.ssl.bcs.ottcn.com/",
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as exc:
+        print(f"Failed to fetch yst_channel.json: {exc}")
+        return []
+
+    channels = []
+    for item in data:
+        uuid = item.get("uuid")
+        name = item.get("name", "")
+        if not uuid:
+            continue
+        channel_config = {
+            uuid: {
+                "scraper": {"ystengx": uuid},
+            }
+        }
+        metadata = {
+            "name": [name],
+            "preview": 2,
+            "recap": 1,
+            "refresh": "once",
+            "last_update": datetime(1970, 1, 1, 0, 0, 0, tzinfo=tz_shanghai),
+        }
+        channels.append(
+            Channel(
+                uuid,
+                metadata,
+                lambda channel, dt, _cfg=channel_config: scrap_channel(
+                    channel, _cfg, dt
+                ),
+            )
+        )
+    print(f"Loaded {len(channels)} channels from yst_channel.json", flush=True)
+    return channels
 
 
 def update_channel_full(channel, num_refresh_channels):

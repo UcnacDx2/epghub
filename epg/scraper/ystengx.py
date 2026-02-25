@@ -3,14 +3,18 @@ from datetime import datetime, date, timezone
 import time
 import requests
 import json
+import urllib.parse
 from . import headers as base_headers, tz_shanghai
 
 _headers = {
     **base_headers,
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "Accept-Language": "zh",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0",
+    "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; B862AV3.2-M Build/PPR1.180610.011)",
 }
+
+# 设备能力串：广西移动 B862AV3.2-M 机顶盒硬件特征，用于获取节目单
+_ABILITY_STR = '{"CITY_CODE":"776","deviceGroupIds":["4575"],"abilities":["4K-1|cp-TENCENT|timeShift|NxM|DL-3rd|upgrade14"]}'
 
 def update(
     channel: Channel, scraper_id: str | None = None, dt: date = datetime.today().date()
@@ -25,10 +29,11 @@ def update(
     # 毫秒级时间戳
     t = int(time.time() * 1000)
 
-    # 构造广西专用 API 请求 URL
+    # 构造广西专用 API 请求 URL（需携带设备能力串才能获取节目单）
     url = (
         f"http://lvps.gx.bcs.ottcn.com:8080/cms-lvp-epg/lvps/getAllProgramlist"
-        f"?abilityString=&startDate={start_date}&endDate={end_date}"
+        f"?abilityString={urllib.parse.quote(_ABILITY_STR)}"
+        f"&startDate={start_date}&endDate={end_date}"
         f"&pos=fullplayer&uuid={channel_id}&noCache=true&serviceChannelId=&t={t}"
     )
 
